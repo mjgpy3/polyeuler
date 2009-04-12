@@ -403,6 +403,70 @@ def soln():
     n = 20
     return sum([ choose(n,k) ** 2 for k in range(0, n+1) ])
 
+@problem(17)
+@answer(21124)
+def soln():
+    """
+    If the numbers 1 to 5 are written out in words: one, two, three, four,
+    five, then there are 3 + 3 + 5 + 4 + 4 = 19 letters used in total.
+
+    If all the numbers from 1 to 1000 (one thousand) inclusive were written out
+    in words, how many letters would be used?
+    """
+    digits = {
+        0 : '',
+        1 : 'one',
+        2 : 'two',
+        3 : 'three',
+        4 : 'four',
+        5 : 'five',
+        6 : 'six',
+        7 : 'seven',
+        8 : 'eight',
+        9 : 'nine',
+    }
+
+    special = {
+        10 : 'ten',
+        11 : 'eleven',
+        12 : 'twelve',
+        13 : 'thirteen',
+        14 : 'fourteen',
+        15 : 'fifteen',
+        16 : 'sixteen',
+        17 : 'seventeen',
+        18 : 'eighteen',
+        19 : 'nineteen',
+        100 : 'onehundred',
+        1000 : 'onethousand',
+    }
+
+    tens = {
+        2 : 'twenty',
+        3 : 'thirty',
+        4 : 'forty',
+        5 : 'fifty',
+        6 : 'sixty',
+        7 : 'seventy',
+        8 : 'eighty',
+        9 : 'ninety',
+    }
+
+    hundred = 'hundred'
+    hundred_and = 'hundredand'
+    one_thousand = 'onethousand'
+
+    def word(n):
+        if n in special: return special[n]
+        if n in digits: return digits[n]
+        if n >= 100:
+            if n >= 200 and n % 100 == 0:
+                return digits[n/100] + hundred
+            return digits[n/100] + hundred_and + word(n % 100)
+        return tens[n/10] + digits[n % 10]
+
+    return sum([ len(word(n)) for n in range(1, 1001) ])
+
 ##
 # runner
 
