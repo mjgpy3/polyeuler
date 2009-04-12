@@ -196,12 +196,12 @@ int main(int argc, char **argv, char **envp)
         int i = 1;
         for (i; i<argc; i++) {
             int n = atoi(argv[i]);
-            printf("#%d: %d\n", n, EULERS[(n-1)]());
+            printf("%d: %d\n", n, EULERS[(n-1)]());
         }
     } else {
         int i = 0;
         for (; EULERS[i] != NULL; i++) {
-            printf("#%d: %d\n", (i+1), EULERS[i]());
+            printf("%d: %d\n", (i+1), EULERS[i]());
         }
     }
     return 0;
