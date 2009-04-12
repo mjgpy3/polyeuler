@@ -1,3 +1,4 @@
 c-euler
 fortran-euler
 *.pyc
+.*.swp
