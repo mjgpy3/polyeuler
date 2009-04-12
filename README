@@ -1,82 +1,15 @@
-This is my attempt to solve all of the problems from Project Euler in as
-many languages as possible.  My goal is to, wherever possible, create a single
-source file which produces a single interpreted script or compiled executable
-which when invoked from the command line with no arguments will print the
-answers to each of the euler problems in order, or, if invoked with arguments
-treats the arguments as problem numbers and prints the answer to the
-appropriate problems.
+This is an attempt to solve all of the problems from Project Euler in as many
+languages as possible.
 
-I also plan at some point (probably once I have gotten the CLI done for 
-each of the languages I'm using) to also implement printing of timing
-information in the output of each result and then optimize each solution
-to be quick (a few seconds or less whenever possible and under a minute
-for all cases).  During this optimization phase I am also planning on
-trying to implement more idiomatic (relative to the implementation language)
-solutions where I have not already done so.
+The goal is this: wherever possible, create a single source file which produces
+a single interpreted script or compiled executable which when invoked from the
+command line with no arguments will print the answers to each of the euler
+problems in order, or, if invoked with arguments treats the arguments as
+problem numbers and prints the answer to the appropriate problems.
 
+This project accepts any contributions that produce correct results.  Fork it
+and push your changes back!
 
-CURRENT SOLUTIONS
-=================
-(Languages with at least one solution implemented (number of solutions
-in parens)):
-
-C (6) +cli
-Clojure (4+) -cli
-Erlang (7) -cli
-Fortran (3) -cli
-Java (5) +cli
-Javascript (7) +cli
-Common LISP (7) +partial cli
-Lua (7) +cli
-OCaml (2) -cli
-Pascal (4) -cli
-Perl (6) +cli
-Python (13) + cli
-Ruby (7+) +cli
-Scala (2) +cli
-Scheme (7) -cli
-Haskell (20+) -cli
-
-That's 16 languages with 101+ (overlapping) solutions.
-
-
-Missing languages that I would like to (and probably will) add:
-===============================================================
-Objective-C
-Prolog
-
-
-Maybe some day, (roughly) in order of preference:
-=================================================
-Fan
-Clean
-Oz
-R
-Mathematica
-Smalltalk
-F#
-Nice
-io
-Forth
-C#
-J
-Rebol
-Maude
-Logo
-Basic
-Rexx
-TCL
-SQL?
-unix shells (bash / ksh / csh / tcsh / zsh)
-other misc unixy things (awk, sed, etc)
-PHP? Maybe not, just on principal.
-Postscript
-Brainfuck
-Whitespace
-
-
-
--
-John Evans
-john@jpevans.com
-
+It is based on work by John Evans (http://github.com/lgastako/polyeuler/),
+although that project has a different purpose and will not be pulling
+contributions from other users.
