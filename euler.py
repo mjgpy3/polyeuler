@@ -385,6 +385,24 @@ def soln():
 
     return biggest_start
 
+@problem(15)
+@answer(137846528820)
+def soln():
+    """
+    Starting in the top left corner of a 22 grid, there are 6 routes (without
+    backtracking) to the bottom right corner.
+
+    How many routes are there through a 2020 grid?
+    """
+    # divide the square along the LL-UR diagonal.  For each vertex on the diagonal,
+    # the number of paths from the upper-left corner is given by (n choose k),
+    # where n is the side-length of the square, and k is the index of the vertex
+    # along the diagonal.  The number of paths through that vertex to the
+    # lower-right corner is then, by symmetry, (n choose k)^2.  We simply sum this
+    # value for each k.
+    n = 20
+    return sum([ choose(n,k) ** 2 for k in range(0, n+1) ])
+
 ##
 # runner
 
