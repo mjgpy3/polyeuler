@@ -31,7 +31,7 @@ Lua (7) +cli
 OCaml (2) -cli
 Pascal (4) -cli
 Perl (6) +cli
-Python (7) + cli
+Python (13) + cli
 Ruby (7+) +cli
 Scala (2) +cli
 Scheme (7) -cli
