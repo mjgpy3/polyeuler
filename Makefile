@@ -1,4 +1,4 @@
-all: c-euler Euler.class fortran-euler
+all: c-euler Euler.class fortran-euler niceeuler.jar go-euler
 
 c-euler: euler.c
 	# -lgmp -I/opt/local/include -L/opt/local/lib
@@ -19,5 +19,26 @@ ScalaEuler.class: ScalaEuler.scala
 run-scala: ScalaEuler.class
 	/opt/local/scala/bin/scala -classpath apfloat.jar:. ScalaEuler
 
+niceeuler.jar: nice/euler/euler.nice
+	nicec --sourcepath=nice -a niceeuler.jar euler
+
+run-nice: niceeuler.jar
+	java -jar niceeuler.jar
+
+ocaml-euler: euler.ml
+	ocamlopt euler.ml -o ocaml-euler
+
+go-euler: euler.6
+	6l -o go-euler euler.6
+
+euler.6: euler.go
+	6g euler.go
+
+ooc-euler: ooc-euler.ooc
+	rock ooc-euler.ooc
+
+rust-euler: euler.rs
+	rustc euler.rs -o rust-euler
+
 clean:
-	\rm -f c-euler
+	\rm -f ooc-euler c-euler niceeuler.jar ocaml-euler *.o *.cm{i,x,o} *.6 go-euler rust-euler

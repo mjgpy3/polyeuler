@@ -8,10 +8,10 @@ use POSIX;
 
 # Euler #1
 # Answer: 233168
-# 
+#
 # If we list all the natural numbers below 10 that are multiples of 3 or 5,
 # we get 3, 5, 6 and 9. The sum of these multiples is 23.
-# 
+#
 # Find the sum of all the multiples of 3 or 5 below 1000.
 
 sub euler1
@@ -153,7 +153,7 @@ sub divisible_by_all
     $result;
 }
 
-sub euler5 
+sub euler5
 {
     my $n = 2520;
     my @ds = (20, 19, 18, 17, 16, 15, 14, 13, 12, 11);
@@ -190,6 +190,31 @@ sub euler6
     }
     return ($sum * $sum) - $sum_squares;
 }
+
+
+# Problem #7
+# Answer: 104743
+#
+# By listing the first six prime numbers: 2, 3, 5, 7, 11, and 13, we can see that the 6th prime is 13.
+#
+# What is the 10001st prime number?
+
+# sub euler7 {
+#     my @primes = (2);
+#     my $i, $j;
+#     for (;;) {
+#         if ($#primes == 10001) {
+#             return @primes[$#primes - 1];
+#         }
+#         my $next_prime = 0;
+#         for ($i = @primes[$#primes - 1]; ;$i++) {
+#             foreach $prime (@primes) {
+#                 if ($i )
+#             }
+#
+#         }
+#     }
+# }
 
 
 sub main {

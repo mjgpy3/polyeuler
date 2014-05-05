@@ -578,7 +578,7 @@ def soln():
 ##
 # runner
 
-if __name__ == "__main__":
+def main():
     if len(sys.argv) > 1:
         for n in sys.argv[1:]:
             n = int(n)
@@ -589,3 +589,6 @@ if __name__ == "__main__":
     else:
         for n, soln in sorted(solutions.items()):
             print "%d: %d" % (n, soln())
+
+if __name__ == "__main__":
+    main()

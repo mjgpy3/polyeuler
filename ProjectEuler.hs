@@ -1,9 +1,10 @@
 module ProjectEuler where
 
 import EulerInputs
-import Char (digitToInt, intToDigit)
+import Char (digitToInt, intToDigit, isAlpha)
 import List (sort, nub, tails, transpose)
 import Data.List (foldl1')
+import Data.Array
 
 -------------
 -- Problem #1
@@ -35,7 +36,7 @@ euler2Alt :: Integer
 euler2Alt = sum . takeWhile (< 4000000) . filter even $ fibs
 
 
--- The fibonacci sequence.  I original did a naive implementation,
+-- The fibonacci sequence.  I originally did a naive implementation,
 -- then ganked this rather clean implementation from the intarwebs:
 --
 --     fibs = 0 : 1 : zipWith (+) fibs (tail fibs)
@@ -147,7 +148,8 @@ euler4 =
 
 -- Test n for palindromicity.
 palindromicNumber :: Integer -> Bool
-palindromicNumber n = show n == (reverse . show) n
+palindromicNumber n = s == reverse s
+    where s = show n
 
 
 -------------
@@ -183,6 +185,7 @@ divisibleByAll xs n = length (takeWhile (factor n) xs) == length xs
 --
 -- Find the difference between the sum of the squares of the first one
 -- hundred natural numbers and the square of the sum.
+euler6 :: Integer
 euler6 =
     let xs = take 100 naturalNumbers
     in (squareOfSum xs) - (sumOfSquares xs)
@@ -227,8 +230,8 @@ nthPrime n = primes !! n
 --
 -- Find the greatest product of five consecutive digits in the
 -- 1000-digit number.
-euler8 :: Int
-euler8 = maximum (productsOfNConsecutiveDigits 5 euler8_input)
+euler8 :: Integer
+euler8 = fromIntegral (maximum (productsOfNConsecutiveDigits 5 euler8_input))
 
 
 -- From the PE forum (adapted to use my equivalent functions)... very nice.
@@ -236,8 +239,8 @@ euler8 = maximum (productsOfNConsecutiveDigits 5 euler8_input)
 -- Cheats in that it also looks at products of strings less than 5
 -- when it gets near the end of the list but that doesn't *really*
 -- matter for this problem.
-euler8Alt :: Int
-euler8Alt = maximum . map (product . take 5) . tails $ stringDigits euler8_input
+euler8Alt :: Integer
+euler8Alt = fromIntegral . maximum . map (product . take 5) . tails $ stringDigits euler8_input
 
 -- The definition of stringDigits does not immediately follow because
 -- it was not originally created until much later, and this function
@@ -308,8 +311,9 @@ euler10 = sum (takeWhile (< 2000000) primes)
 --
 -- What is the greatest product of four adjacent numbers in any
 -- direction (up, down, left, right, or diagonally) in the 20x20 grid?
-euler11 :: Int
-euler11 = maximum [e11MaxColProduct, e11MaxRowProduct] --, e11_max_diag_product]
+euler11 :: Integer
+euler11 = fromIntegral (maximum [e11MaxColProduct, e11MaxRowProduct])
+ --, e11_max_diag_product]
 
 
 -- Find the maximum of all the maximum products from all of the rows.
@@ -399,11 +403,11 @@ fiveAtATime = nAtATime 5
 --
 -- What is the value of the first triangle number to have over five hundred divisors?
 euler12 :: Integer
-euler12 = head [x | x <- triangleNumbers, ((num_factors x) > 500)]
+euler12 = head [x | x <- triangleNumbers, ((numFactors x) > 500)]
 
 
-num_factors :: Integer -> Int
-num_factors n = (length (factors n))
+numFactors :: Integer -> Int
+numFactors n = (length (factors n))
 
 
 -- An infinite sequence of triangle numbers.
@@ -425,7 +429,7 @@ triangleNumber n
 --
 -- Work out the first ten digits of the sum of the following
 -- one-hundred 50-digit numbers.
-euler13 :: Int
+euler13 :: Integer
 euler13 = read (take 10 (show (sum euler13_input)))
 
 
@@ -453,27 +457,31 @@ euler13 = read (take 10 (show (sum euler13_input)))
 --
 -- NOTE: Once the chain starts the terms are allowed to go above one
 -- million.
-euler14 :: Int
+euler14 :: Integer
 euler14 = euler14' 3 0 0
 
-euler14' :: Int -> Int -> Int -> Int
+euler14' :: Integer -> Integer -> Integer -> Integer
 euler14' n res len =
     if n > 999999
     then
         res
     else
-        let new_len = collatzLength (fromIntegral n)
+        let newLen = collatzLength (fromIntegral n)
         in
-          if new_len > len
+          if newLen > len
           then
-              euler14' (succ n) n new_len
+              euler14' (succ n) n newLen
           else
               euler14' (succ n) res len
 
 
+integerLength :: [a] -> Integer
+integerLength = fromIntegral . length
+
+
 -- Find the length of the (terminating) collatz sequence starting with n.
-collatzLength :: Integer -> Int
-collatzLength n = length (terminatingCollatzSequence n)
+collatzLength :: Integer -> Integer
+collatzLength n = integerLength (terminatingCollatzSequence n)
 
 
 -- Generate the (terminating) collatz sequence starting with n.
@@ -487,10 +495,33 @@ collatzSequence n = n:map collatz (collatzSequence n)
 
 
 -- Generate the next collatz number given the current number n.
+collatz :: Integer -> Integer
 collatz n
         | even n    = div n 2
         | otherwise = ((3 * n) + 1)
 
+
+-----------
+-- Problem #15
+-- Answer: 137846528820
+--
+--  Starting in the top left corner of a 22 grid, there are 6 routes
+-- (without backtracking) to the bottom right corner.
+--
+-- [diagram]
+--
+-- How many routes are there through a 20 x 20 grid?
+
+e15values = array ((0, 0), (20, 20)) [((x, y), e15 x y) | x <- [0..20],
+                                                          y <- [0..20]]
+    where
+      e15 0 0 = 1
+      e15 x 0 = 1
+      e15 0 y = 1
+      e15 x y = (e15values!((pred x), y)) + (e15values!(x, (pred y)))
+
+euler15 :: Integer
+euler15 = e15values!(20, 20)
 
 -------------
 -- Problem #16
@@ -499,14 +530,14 @@ collatz n
 -- 2^15 = 32768 and the sum of its digits is 3 + 2 + 7 + 6 + 8 = 26.
 --
 -- What is the sum of the digits of the number 2^1000?
-euler16 :: Int
+euler16 :: Integer
 euler16 = sumOfDigits (2 ^ 1000)
 
 
 -- Find the sum of the digits in a number.
 -- Refactored out commonality from #16 and #20.
-sumOfDigits :: Integer -> Int
-sumOfDigits n = sum (integerDigits n)
+sumOfDigits :: Integer -> Integer
+sumOfDigits n = (fromIntegral (sum (integerDigits n)))
 
 
 -- Generate a list of the individual digits of a number.
@@ -521,6 +552,60 @@ stringDigits :: String -> [Int]
 stringDigits = map digitToInt
 
 
+----
+-- Problem #17
+-- Answer: 21124
+--
+-- If the numbers 1 to 5 are written out in words: one, two, three,
+-- four, five, then there are 3 + 3 + 5 + 4 + 4 = 19 letters used in
+-- total.
+--
+-- If all the numbers from 1 to 1000 (one thousand) inclusive were
+-- written out in words, how many letters would be used?
+--
+-- NOTE: Do not count spaces or hyphens. For example, 342 (three
+-- hundred and forty-two) contains 23 letters and 115 (one hundred and
+-- fifteen) contains 20 letters. The use of "and" when writing out
+-- numbers is in compliance with British usage.
+
+euler17 :: Integer
+euler17 = letters_in_numbers [1..1000]
+
+
+letters_in_numbers :: [Int] -> Integer
+letters_in_numbers xs = (fromIntegral . doSum) xs
+    where
+      doSum :: [Int] -> Int
+      doSum ys = sum $ map transform ys
+      transform :: Int -> Int
+      transform = length . alpha_only . num_in_words
+      alpha_only :: [Char] -> [Char]
+      alpha_only = filter isAlpha
+
+
+num_in_words n = w n
+    where
+      lows = ["", "one", "two", "three", "four", "five", "six", "seven",
+              "eight", "nine", "ten", "eleven", "twelve", "thirteen",
+              "fourteen", "fifteen", "sixteen", "seventeen", "eighteen",
+              "nineteen"]
+      tens = ["twenty", "thirty", "forty", "fifty", "sixty", "seventy",
+                          "eighty", "ninety"]
+      w 1000 = "one thousand"
+      w n | n <= 19 = lows !! n
+      w n | n > 19 && n <= 99 = (tens !! ((div n 10) - 2)) ++
+                                if not (r == 0) then
+                                    " " ++ (lows !! r)
+                                else
+                                    ""
+                                        where r = rem n 10
+      w n = (lows !! (div n 100)) ++ " hundred" ++
+            if not (r == 0) then
+                " and " ++ (w r)
+            else
+                ""
+                    where r = rem n 100
+
 -------------
 -- Problem #20
 -- Answer: 648 (Confirmed)
@@ -528,7 +613,7 @@ stringDigits = map digitToInt
 -- n! means n  (n x 1) x ...  3 x 2 x 1
 --
 -- Find the sum of the digits in the number 100!
-euler20 :: Int
+euler20 :: Integer
 euler20 = sumOfDigits (fac 100)
 
 fac :: Integer -> Integer
@@ -569,7 +654,10 @@ amicable n =
 -- Answer: 4782 (Confirmed)
 --
 -- What is the first term in the Fibonacci sequence to contain 1000 digits?
-euler25 = succ
+euler25 :: Integer
+euler25 = fromIntegral e25
+    where
+      e25 = succ
           (length
            (takeWhile
             (< 1000)
@@ -595,8 +683,8 @@ euler25 = succ
 --
 -- How many distinct terms are in the sequence generated by ab for 2
 -- <= a <= 100 and 2 <= b <= 100?
-euler29 :: Int
-euler29 = length (euler29Numbers 2 100)
+euler29 :: Integer
+euler29 = fromIntegral (length (euler29Numbers 2 100))
 
 
 euler29Numbers :: Int -> Int -> [Integer]
@@ -627,6 +715,7 @@ intPow a b = (fromIntegral a) ^ b
 -- I found "6" by trying take 1, take 2, etc until it seemed to be
 -- taking too long and then just tried the sum and it worked on the
 -- site... need a more mathy approach in general.
+euler30 :: Integer
 euler30 = sum(take 6 e30Numbers)
 
 
@@ -674,7 +763,7 @@ sumOfPthPower n p = sum (map (`intPow` p) (integerDigits n))
 -- euler53 =
 --     length (filter (> 1000000) valuesOfNCR)
 --         where
---           valuesOfNCR = 
+--           valuesOfNCR =
 
 --     let range = [1..100]
 --     in map something range
@@ -682,7 +771,7 @@ sumOfPthPower n p = sum (map (`intPow` p) (integerDigits n))
 
 
 
--- nextCombos n r = 
+-- nextCombos n r =
 --     if r > n
 --     then nextCombos (succ n) 1
 --     else combinationsOf r [1..n]
@@ -691,15 +780,6 @@ sumOfPthPower n p = sum (map (`intPow` p) (integerDigits n))
 -- combinationsOf 0 _ = [[]]
 -- combinationsOf _ [] = []
 -- combinationsOf k (x:xs) = map (x:) (combinationsOf (k-1) xs) ++ combinationsOf k xs
-
-
-
-
-
-
-
-
-
 
 
 -- Test n for primality.
@@ -741,6 +821,7 @@ e34Numbers = filter isE34Number [3..]
 -- arrived at "take 2" by doing "take 5" and observing that it took
 -- forever after 2... so kind of cheating... but oh well.
 -- "40730"
+euler34 :: Integer
 euler34 = sum (take 2 e34Numbers)
 
 
@@ -763,9 +844,11 @@ rotations n =
 
 isCircularPrime = (all prime) . rotations
 
--- too slow or some other problem keeps it from finishing even over an hour+
--- I think I basically just need a faster prime generator.  Need to look into seives, etc.
-euler35 = length (filter isCircularPrime (takeWhile (< 1000000) primes))
+-- too slow or some other problem keeps it from finishing even over an
+-- hour+ I think I basically just need a faster prime generator.  Need
+-- to look into seives, etc.
+euler35 :: Integer
+euler35 = fromIntegral (length (filter isCircularPrime (takeWhile (< 1000000) primes)))
 
 
 -- euler #36
@@ -857,7 +940,7 @@ euler36 = sum [n | n <- [1..999999], palindromicNumber n, is_palindromic_in_bina
 -- n mod 10 to get the number of digits grouped together that we need to skip
 
 -- euler #48
---
+-- Answer: 9110846700
 -- The series, 1^1 + 2^2 + 3^3 + ... + 10^10 = 10405071317.
 --
 -- Find the last ten digits of the series, 1^1 + 2^2 + 3^3 + ... + 1000^1000.
@@ -866,7 +949,8 @@ self_pow n = n ^ n
 e48_series = map self_pow [1..]
 e48_sum = sum (take 1000 e48_series)
 -- "9110846700"
-euler48 = reverse (take 10 (reverse (show e48_sum)))
+euler48 :: Integer
+euler48 = read (reverse (take 10 (reverse (show e48_sum))))
 
 -- euler #52
 --
