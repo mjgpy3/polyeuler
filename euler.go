@@ -50,6 +50,24 @@ func euler2() int {
 	return sum
 }
 
+// Euler #3:
+// Answer: 6857
+//
+// The prime factors of 13195 are 5, 7, 13 and 29.
+//
+// What is the largest prime factor of the number 600851475143 ?
+func euler3() int {
+	toFactor := 600851475143
+	var largest int
+	for i := 2; toFactor > 1; i += 1 {
+		for toFactor % i == 0 {
+			largest = i
+			toFactor /= i
+		}
+	}
+	return largest
+}
+
 func show(n string, r int) {
 	fmt.Printf("%s: %d\n", n, r);
 }
@@ -59,6 +77,7 @@ func main() {
     if flag.NArg() <= 0 {
 		show("1", euler1());
 		show("2", euler2());
+		show("3", euler3());
 	} else {
 		for i := 0; i < flag.NArg(); i++ {
 			var r int;
